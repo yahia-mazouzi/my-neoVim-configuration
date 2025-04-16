@@ -31,16 +31,15 @@ return {
           view = "mini",
         },
         signature = {
-          enabled = true,
+          enabled = false,
           auto_open = {
-            enabled = true,
-            trigger = true,
-            luasnip = true,
+            enabled = false,
+            trigger = false,
+            luasnip = false,
           },
         },
         hover = {
-          enabled = true,
-          view = nil, -- default to builtin
+          enabled = false,
         },
         message = {
           enabled = true,

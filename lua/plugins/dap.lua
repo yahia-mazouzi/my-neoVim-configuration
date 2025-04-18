@@ -5,47 +5,48 @@ return {
       local map = vim.keymap.set
       map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>")
       map("n", "<leader>dc", "<cmd> DapContinue <CR>")
-      map("n", "<leader>dj", "<cmd> DapStepOver <CR>")
-      map("n", "<leader>dk", "<cmd> DapStepOut <CR>")
-      map("n", "<leader>dus", function()
-        local widgets = require "dap.ui.widgets"
-        local sidebar = widgets.sidebar(widgets.scopes)
-        sidebar.open()
-      end)
+      map("n", "J", function()
+        local dap = require "dap"
+        if dap.session() then
+          dap.step_over()
+        else
+          vim.cmd "normal! J"
+        end
+      end, { desc = "Step Over (Only if DAP session active)" })
+
+      vim.fn.sign_define("DapBreakpoint", {
+        text = "B", -- Simple filled circle
+        texthl = "DapBreakpoint",
+        linehl = "",
+        numhl = "",
+      })
+
+      vim.api.nvim_set_hl(0, "DapBreakpoint", {
+        fg = "#BE5046", -- Bright red
+        bg = "",
+      })
+      vim.fn.sign_define("DapStopped", {
+        text = "→",
+        texthl = "DapStopped",
+        linehl = "DapStoppedLine",
+        numhl = "",
+      })
+      vim.api.nvim_set_hl(0, "DapStopped", {
+        fg = "#5F865F", -- Same red
+        bg = "",
+      })
+      vim.api.nvim_set_hl(0, "DapStoppedLine", {
+        bg = "#3E4452",
+      })
     end,
   },
-
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    opts = {
-      handlers = {},
-      ensure_installed = {
-        "codelldb",
-      },
-    },
-  },
-
-  -- go debuger
   {
     "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
-    dependencies = {
-      "leoluz/nvim-dap-go",
-      "rcarriga/nvim-dap-ui",
-      "nvim-neotest/nvim-nio",
-    },
+    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
     config = function()
       local dap = require "dap"
       local dapui = require "dapui"
-
-      require("dap-go").setup()
       dapui.setup()
-
       dap.listeners.after.event_initialized["dapui_config"] = function()
         dapui.open()
       end
@@ -55,6 +56,18 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
+    end,
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function()
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
     end,
   },
 }

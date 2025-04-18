@@ -8,6 +8,12 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    opts = {
+      diagnostics = {
+        virtual_text = false,
+        signs = false,
+      },
+    },
     config = function()
       require "configs.lspconfig"
     end,

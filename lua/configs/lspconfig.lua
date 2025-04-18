@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 
 -- EXAMPLE
-local servers = { "html", "cssls", "gopls", "eslint", "jdtls", "jsonls", "prismals", "basedpyright" }
+local servers = { "html", "cssls", "gopls", "eslint", "jdtls", "jsonls", "prismals", "basedpyright", "ruff" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -16,12 +16,10 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
---   on_attach = nvlsp.on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
+local disable_formatting = function(client)
+  client.server_capabilities.documentFormattingProvider = false
+  client.server_capabilities.documentRangeFormattingProvider = false
+end
 
 lspconfig.ts_ls.setup {
   on_attach = nvlsp.on_attach,
@@ -29,15 +27,14 @@ lspconfig.ts_ls.setup {
   capabilities = nvlsp.capabilities,
   init_options = {
     preferences = {
-      disbaleSuggestions = true,
+      disableSuggestions = true,
     },
   },
 }
 
 lspconfig.clangd.setup {
   on_attach = function(client, bufnr)
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
+    disable_formatting(client)
     nvlsp.on_attach(client, bufnr)
   end,
   capabilities = nvlsp.capabilities,
@@ -58,7 +55,6 @@ lspconfig.basedpyright.setup {
           reportArgumentType = "none",
           reportFunctionMemberAccess = "none",
           reportUnknownMemberType = "none",
-          reportImplicitOverride = "none",
           reportUninitializedInstanceVariable = "none",
           reportAttributeAccessIssue = "none",
         },
@@ -69,7 +65,6 @@ lspconfig.basedpyright.setup {
     },
   },
 }
-
 
 lspconfig.emmet_language_server.setup {
   filetypes = {

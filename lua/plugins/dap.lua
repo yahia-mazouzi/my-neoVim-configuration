@@ -14,6 +14,10 @@ return {
         end
       end, { desc = "Step Over (Only if DAP session active)" })
 
+      map("n", "K", function()
+        require("dap.ui.widgets").hover()
+      end, { desc = "DAP Hover (variable info)" })
+
       vim.fn.sign_define("DapBreakpoint", {
         text = "B", -- Simple filled circle
         texthl = "DapBreakpoint",
@@ -67,7 +71,19 @@ return {
     },
     config = function()
       local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
-      require("dap-python").setup(path)
+      local dap_python = require "dap-python"
+      dap_python.setup(path)
+
+      vim.keymap.set("n", "<leader>dd", function()
+        require("dap").run {
+          type = "python",
+          request = "launch",
+          name = "Django runserver",
+          program = vim.fn.getcwd() .. "/manage.py",
+          args = { "runserver", "--noreload" },
+          django = true,
+        }
+      end, { desc = "Launch Django runserver in DAP" })
     end,
   },
 }

@@ -5,7 +5,7 @@ return {
   config = function()
     require("noice").setup {
       cmdline = {
-        view = "cmdline_popup", -- or cmdline
+        view = "cmdline", -- or cmdline
         format = {
           cmdline = { icon = "" },
           search_down = { icon = " " },

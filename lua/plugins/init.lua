@@ -86,8 +86,8 @@ return {
           end, { desc = "Previous Git hunk" })
 
           -- Actions
-          map("n", "<leader>gs", gitsigns.stage_hunk, { desc = "Stage Git hunk" })
-          map("n", "<leader>gr", gitsigns.reset_hunk, { desc = "Reset Git hunk" })
+          map("n", "<leader>gs", gitsigns.stage_hunk, { desc = "Git Stage hunk" })
+          map("n", "<leader>gr", gitsigns.reset_hunk, { desc = "Git Reset hunk" })
 
           map("v", "<leader>gs", function()
             gitsigns.stage_hunk { vim.fn.line ".", vim.fn.line "v" }
@@ -97,10 +97,10 @@ return {
             gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v" }
           end, { desc = "Reset selected Git hunk" })
 
-          map("n", "<leader>gS", gitsigns.stage_buffer, { desc = "Stage entire Git buffer" })
-          map("n", "<leader>gR", gitsigns.reset_buffer, { desc = "Reset entire Git buffer" })
-          map("n", "<leader>gp", gitsigns.preview_hunk, { desc = "Preview Git hunk" })
-          map("n", "<leader>gi", gitsigns.preview_hunk_inline, { desc = "Inline preview Git hunk" })
+          map("n", "<leader>gS", gitsigns.stage_buffer, { desc = "Git Stage entire buffer" })
+          map("n", "<leader>gR", gitsigns.reset_buffer, { desc = "Git Reset entire buffer" })
+          map("n", "<leader>gp", gitsigns.preview_hunk, { desc = "Git Preview Git hunk" })
+          map("n", "<leader>gi", gitsigns.preview_hunk_inline, { desc = "Git Inline preview hunk" })
 
           map("n", "<leader>gb", function()
             gitsigns.blame_line { full = true }
@@ -119,12 +119,12 @@ return {
           map("n", "<leader>gq", gitsigns.setqflist, { desc = "Git: Set quickfix list (current hunks)" })
 
           -- Toggles
-          map("n", "<leader>gb", gitsigns.toggle_current_line_blame, { desc = "Toggle Git line blame" })
-          map("n", "<leader>gd", gitsigns.toggle_deleted, { desc = "Toggle Git deleted lines" })
-          map("n", "<leader>gw", gitsigns.toggle_word_diff, { desc = "Toggle Git word diff" })
+          map("n", "<leader>gb", gitsigns.toggle_current_line_blame, { desc = "Git Toggle line blame" })
+          map("n", "<leader>gd", gitsigns.toggle_deleted, { desc = "Git Toggle deleted lines" })
+          map("n", "<leader>gw", gitsigns.toggle_word_diff, { desc = "Git Toggle word diff" })
 
           -- Text object
-          map({ "o", "x" }, "<leader>gih", gitsigns.select_hunk, { desc = "Select Git hunk" })
+          map({ "o", "x" }, "<leader>gih", gitsigns.select_hunk, { desc = "Git Select hunk" })
         end,
       }
     end,

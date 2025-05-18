@@ -14,31 +14,34 @@ return {
         end
       end, { desc = "Step Over (Only if DAP session active)" })
 
-      map("n", "K", function()
+      map("n", "H", function()
         require("dap.ui.widgets").hover()
       end, { desc = "DAP Hover (variable info)" })
 
       vim.fn.sign_define("DapBreakpoint", {
-        text = "B", -- Simple filled circle
+        text = "B",
         texthl = "DapBreakpoint",
         linehl = "",
         numhl = "",
       })
 
       vim.api.nvim_set_hl(0, "DapBreakpoint", {
-        fg = "#BE5046", -- Bright red
+        fg = "#BE5046",
         bg = "",
       })
+
       vim.fn.sign_define("DapStopped", {
         text = "→",
         texthl = "DapStopped",
         linehl = "DapStoppedLine",
         numhl = "",
       })
+
       vim.api.nvim_set_hl(0, "DapStopped", {
-        fg = "#5F865F", -- Same red
+        fg = "#5F865F",
         bg = "",
       })
+
       vim.api.nvim_set_hl(0, "DapStoppedLine", {
         bg = "#3E4452",
       })
@@ -84,6 +87,40 @@ return {
           django = true,
         }
       end, { desc = "Launch Django runserver in DAP" })
+
+      vim.keymap.set("n", "<leader>ddd", function()
+        require("dap").run {
+          type = "python",
+          request = "attach",
+          connect = {
+            host = "127.0.0.1",
+            port = 5678,
+          },
+          mode = "remote",
+          name = "Attach to Docker Django",
+          justMyCode = false,
+          pathMappings = {
+            {
+              localRoot = vim.fn.getcwd() .. "/app",
+              remoteRoot = "/usr/src/app",
+            },
+          },
+        }
+      end, { desc = "Attach Docker Django debug" })
+    end,
+  },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      require("nvim-dap-virtual-text").setup {
+        enabled = true,
+        enabled_commands = true,
+        highlight_changed_variables = true,
+        highlight_new_as_changed = true,
+        show_stop_reason = true,
+        commented = true, -- 👈 Adds virtual text as comments
+      }
     end,
   },
 }

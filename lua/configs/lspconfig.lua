@@ -40,6 +40,15 @@ lspconfig.clangd.setup {
   capabilities = nvlsp.capabilities,
 }
 
+lspconfig.ruff.setup {
+  -- for more code actions , ruff is used by conform for hunk formatting
+  on_attach = function(client, bufnr)
+    disable_formatting(client)
+    nvlsp.on_attach(client, bufnr)
+  end,
+  capabilities = nvlsp.capabilities,
+}
+
 lspconfig.basedpyright.setup {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
@@ -56,7 +65,9 @@ lspconfig.basedpyright.setup {
           reportFunctionMemberAccess = "none",
           reportUnknownMemberType = "none",
           reportUninitializedInstanceVariable = "none",
+          reportUnknownArgumentType = "none",
           reportAttributeAccessIssue = "none",
+          reportAny = "none",
         },
         inlayHints = {
           callArgumentNames = true,

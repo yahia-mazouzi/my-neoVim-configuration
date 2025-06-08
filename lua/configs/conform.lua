@@ -8,16 +8,14 @@ local options = {
     go = { "gofumpt" },
     python = { "ruff_format" },
     c_cpp = { "clang-format" },
-    cpp = { "clang_format" },
-    c = { "clang_format" },
+    cpp = { "clang-format" },
+    c = { "clang-format" },
     java = { "google-java-format" },
   },
 
-  format_on_save = {
-    -- These options will be passed to conform.format()
-    timeout_ms = 500,
-    lsp_fallback = true,
-  },
+  format_on_save = function(buffnr)
+    return
+  end,
 }
 
 return options

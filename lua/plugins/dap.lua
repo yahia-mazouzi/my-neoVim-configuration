@@ -107,6 +107,26 @@ return {
           },
         }
       end, { desc = "Attach Docker Django debug" })
+
+      vim.keymap.set("n", "<leader>ddc", function()
+        require("dap").run {
+          type = "python",
+          request = "attach",
+          connect = {
+            host = "127.0.0.1",
+            port = 5678,
+          },
+          mode = "remote",
+          name = "Attach to Celery Worker",
+          justMyCode = false,
+          pathMappings = {
+            {
+              localRoot = vim.fn.getcwd() .. "/app",
+              remoteRoot = "/usr/src/app",
+            },
+          },
+        }
+      end, { desc = "Attach Celery Worker Debugger" })
     end,
   },
   {

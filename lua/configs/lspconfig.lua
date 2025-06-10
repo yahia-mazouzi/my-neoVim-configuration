@@ -7,6 +7,7 @@ local lspconfig = require "lspconfig"
 local servers = { "html", "cssls", "gopls", "eslint", "jdtls", "jsonls", "prismals", "basedpyright", "flake8" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
+local navbuddy = require("nvim-navbuddy")
 -- lsps with default config
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {

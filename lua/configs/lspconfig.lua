@@ -4,14 +4,29 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 
 -- EXAMPLE
-local servers = { "html", "cssls", "gopls", "eslint", "jdtls", "jsonls", "prismals", "basedpyright", "flake8" }
-local nvlsp = require "nvchad.configs.lspconfig"
+local servers = {
+  "html",
+  "cssls",
+  "gopls",
+  "eslint",
+  "jdtls",
+  "jsonls",
+  "prismals",
+  -- "pylyzer",
+  "jedi_language_server",
 
-local navbuddy = require("nvim-navbuddy")
+  "flake8",
+}
+local nvlsp = require "nvchad.configs.lspconfig"
+local navbuddy = require "nvim-navbuddy"
 -- lsps with default config
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
+    on_attach = function(client, bufnr)
+      navbuddy.attach(client, bufnr)
+      nvlsp.on_attach(client, bufnr)
+    end,
+
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
   }
@@ -50,33 +65,35 @@ lspconfig.ruff.setup {
   capabilities = nvlsp.capabilities,
 }
 
-lspconfig.basedpyright.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-  settings = {
-    basedpyright = {
-      analysis = {
-        diagnosticSeverityOverrides = {
-          reportUnknownVariableType = "none",
-          reportUnannotatedClassAttribute = "none",
-          reportIncompatibleVariableOverride = "none",
-          reportMissingTypeArgument = "none",
-          reportArgumentType = "none",
-          reportFunctionMemberAccess = "none",
-          reportUnknownMemberType = "none",
-          reportUninitializedInstanceVariable = "none",
-          reportUnknownArgumentType = "none",
-          reportAttributeAccessIssue = "none",
-          reportAny = "none",
-        },
-        inlayHints = {
-          callArgumentNames = true,
-        },
-      },
-    },
-  },
-}
+-- lspconfig.basedpyright.setup {
+--   on_attach = nvlsp.on_attach,
+--   on_init = nvlsp.on_init,
+--   capabilities = nvlsp.capabilities,
+--   settings = {
+--     basedpyright = {
+--       analysis = {
+--         diagnosticSeverityOverrides = {
+--           reportUnknownVariableType = "none",
+--           reportUnannotatedClassAttribute = "none",
+--           reportIncompatibleVariableOverride = "none",
+--           reportMissingTypeArgument = "none",
+--           reportArgumentType = "none",
+--           reportFunctionMemberAccess = "none",
+--           reportUnknownMemberType = "none",
+--           reportUninitializedInstanceVariable = "none",
+--           reportUnknownArgumentType = "none",
+--           reportAttributeAccessIssue = "none",
+--           reportImplicitRelativeImport = "none",
+--           reportUnusedCallResult = "none",
+--           reportAny = "none",
+--         },
+--         inlayHints = {
+--           callArgumentNames = true,
+--         },
+--       },
+--     },
+--   },
+-- }
 
 lspconfig.emmet_language_server.setup {
   filetypes = {

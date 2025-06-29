@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = "BufWritePre", -- uncomment for format on save
+    -- event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -53,6 +53,8 @@ return {
       require("gitsigns").setup {
         on_attach = function(bufnr)
           local gitsigns = require "gitsigns"
+          gitsigns.toggle_numhl(true)
+          gitsigns.toggle_current_line_blame(true)
 
           local function map(mode, l, r, opts)
             opts = opts or {}

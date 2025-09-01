@@ -100,10 +100,18 @@ return {
           name = "Attach to Docker Django",
           justMyCode = false,
           pathMappings = {
+            -- {
+            --   localRoot = vim.fn.getcwd() .. "/app",
+            --   remoteRoot = "/usr/src/app",
+            -- },
             {
-              localRoot = vim.fn.getcwd() .. "/app",
-              remoteRoot = "/usr/src/app",
+              localRoot = "/Users/med/Documents/Work/RB/domainprospector/webapp/domainprospector",
+              remoteRoot = "/linklabs",
             },
+            -- {
+            --   localRoot = vim.fn.getcwd() .. "/app",
+            --   remoteRoot = "/usr/src/app",
+            -- },
           },
         }
       end, { desc = "Attach Docker Django debug" })
@@ -139,7 +147,74 @@ return {
         highlight_changed_variables = true,
         highlight_new_as_changed = true,
         show_stop_reason = true,
-        commented = true, -- 👈 Adds virtual text as comments
+        commented = true,
+      }
+    end,
+  },
+  {
+    "mxsdev/nvim-dap-vscode-js",
+    ft = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function()
+  local dap = require "dap"
+  local dap_vscode_js = require "dap-vscode-js"
+
+  dap_vscode_js.setup {
+    debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
+    adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
+  }
+
+  dap.adapters["pwa-node"] = {
+    type = "server",
+    host = "127.0.0.1",
+    port = 8123,
+    executable = {
+      command = "js-debug-adapter",
+    },
+  }
+
+  for _, language in ipairs { "javascript", "typescriptreact", "javascriptreact" } do
+    dap.configurations[language] = {
+
+      {
+        type = "pwa-node",
+        request = "launch",
+        name = "Launch file (TS/JS)",
+        program = "${file}",
+        cwd = vim.fn.getcwd(),
+        runtimeExecutable = "ts-node",
+        sourceMaps = true,
+        protocol = "inspector",
+        console = "integratedTerminal",
+      },
+      {
+        type = "pwa-node",
+        request = "attach",
+        name = "Attach to process",
+        processId = require("dap.utils").pick_process,
+        cwd = vim.fn.getcwd(),
+      },
+    }
+  end
+
+      dap.configurations.typescript = {
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Launch TS file",
+          program = "${file}",
+          cwd = vim.fn.getcwd(),
+          runtimeExecutable = "ts-node",
+          sourceMaps = true,
+          protocol = "inspector",
+          skipFiles = { "<node_internals>/**" },
+          waitForDebugger = true, -- 💡 This makes Node pause until DAP is read
+          runtimeArgs = { "--esm", "--inspect-brk" },
+        },
       }
     end,
   },

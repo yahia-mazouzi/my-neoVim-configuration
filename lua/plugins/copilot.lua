@@ -30,7 +30,7 @@ return {
                 "'",
                 "/",
               },
-              debounceMs = 75, -- faster refresh (default ~300ms)
+              debounceMs = 50, -- even faster refresh for more suggestions
             },
           },
         },

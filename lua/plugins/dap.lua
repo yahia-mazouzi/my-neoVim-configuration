@@ -88,7 +88,54 @@ return {
         }
       end, { desc = "Launch Django runserver in DAP" })
 
+      -- Define project mapping configurations
+      local project_mappings = {
+        default = {
+          {
+            localRoot = vim.fn.getcwd() .. "/app",
+            remoteRoot = "/usr/src/app",
+          },
+        },
+        domainprospector = {
+          {
+            localRoot = "/Users/med/Documents/Work/RB/domainprospector/webapp/domainprospector",
+            remoteRoot = "/linklabs",
+          },
+        },
+        -- Add more project configurations as needed:
+        -- project_name = {
+        --   { localRoot = "...", remoteRoot = "..." },
+        -- },
+      }
+
+      -- Function to select project configuration
+      local function select_project_mappings()
+        local projects = {}
+        for name, _ in pairs(project_mappings) do
+          table.insert(projects, name)
+        end
+        table.sort(projects)
+
+        vim.ui.select(projects, {
+          prompt = "Select project configuration:",
+          format_item = function(item)
+            return item
+          end,
+        }, function(choice)
+          if choice then
+            vim.g.dap_selected_project = choice
+          end
+        end)
+      end
+
+      -- Map a key to select project
+      vim.keymap.set("n", "<leader>dps", select_project_mappings, { desc = "Select DAP project mapping" })
+
       vim.keymap.set("n", "<leader>ddd", function()
+        -- Get selected project or use default
+        local selected_project = vim.g.dap_selected_project or "default"
+        local mappings = project_mappings[selected_project]
+
         require("dap").run {
           type = "python",
           request = "attach",
@@ -97,22 +144,9 @@ return {
             port = 5678,
           },
           mode = "remote",
-          name = "Attach to Docker Django",
+          name = "Attach to Docker Django (" .. selected_project .. ")",
           justMyCode = false,
-          pathMappings = {
-            -- {
-            --   localRoot = vim.fn.getcwd() .. "/app",
-            --   remoteRoot = "/usr/src/app",
-            -- },
-            {
-              localRoot = "/Users/med/Documents/Work/RB/domainprospector/webapp/domainprospector",
-              remoteRoot = "/linklabs",
-            },
-            -- {
-            --   localRoot = vim.fn.getcwd() .. "/app",
-            --   remoteRoot = "/usr/src/app",
-            -- },
-          },
+          pathMappings = mappings,
         }
       end, { desc = "Attach Docker Django debug" })
 
@@ -160,46 +194,46 @@ return {
       "rcarriga/nvim-dap-ui",
     },
     config = function()
-  local dap = require "dap"
-  local dap_vscode_js = require "dap-vscode-js"
+      local dap = require "dap"
+      local dap_vscode_js = require "dap-vscode-js"
 
-  dap_vscode_js.setup {
-    debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
-    adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
-  }
+      dap_vscode_js.setup {
+        debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
+        adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
+      }
 
-  dap.adapters["pwa-node"] = {
-    type = "server",
-    host = "127.0.0.1",
-    port = 8123,
-    executable = {
-      command = "js-debug-adapter",
-    },
-  }
+      dap.adapters["pwa-node"] = {
+        type = "server",
+        host = "127.0.0.1",
+        port = 8123,
+        executable = {
+          command = "js-debug-adapter",
+        },
+      }
 
-  for _, language in ipairs { "javascript", "typescriptreact", "javascriptreact" } do
-    dap.configurations[language] = {
+      for _, language in ipairs { "javascript", "typescriptreact", "javascriptreact" } do
+        dap.configurations[language] = {
 
-      {
-        type = "pwa-node",
-        request = "launch",
-        name = "Launch file (TS/JS)",
-        program = "${file}",
-        cwd = vim.fn.getcwd(),
-        runtimeExecutable = "ts-node",
-        sourceMaps = true,
-        protocol = "inspector",
-        console = "integratedTerminal",
-      },
-      {
-        type = "pwa-node",
-        request = "attach",
-        name = "Attach to process",
-        processId = require("dap.utils").pick_process,
-        cwd = vim.fn.getcwd(),
-      },
-    }
-  end
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file (TS/JS)",
+            program = "${file}",
+            cwd = vim.fn.getcwd(),
+            runtimeExecutable = "ts-node",
+            sourceMaps = true,
+            protocol = "inspector",
+            console = "integratedTerminal",
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach to process",
+            processId = require("dap.utils").pick_process,
+            cwd = vim.fn.getcwd(),
+          },
+        }
+      end
 
       dap.configurations.typescript = {
         {

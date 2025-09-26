@@ -6,12 +6,16 @@
 local M = {}
 
 M.base46 = {
-  theme = "kanagawa",
+  transparency = true,
+  theme = "onedark",
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
+    Pmenu = { bg = "white" },
+    -- Normal = {
+    --   bg = { "black", 0.4 },
+    -- },
   },
-  integrations = { "git", "dap", "mason", "treesitter" },
 }
 
 M.nvdash = {

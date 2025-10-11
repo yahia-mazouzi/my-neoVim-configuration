@@ -92,14 +92,14 @@ return {
       local project_mappings = {
         default = {
           {
-            localRoot = vim.fn.getcwd() .. "/app",
-            remoteRoot = "/usr/src/app",
+            localRoot = "/Users/med/Documents/Work/RB/domainprospector/app",
+            remoteRoot = "/linklabs",
           },
         },
-        domainprospector = {
+        gsc = {
           {
-            localRoot = "/Users/med/Documents/Work/RB/domainprospector/webapp/domainprospector",
-            remoteRoot = "/linklabs",
+            localRoot = vim.fn.getcwd() .. "/app",
+            remoteRoot = "/usr/src/app",
           },
         },
         -- Add more project configurations as needed:

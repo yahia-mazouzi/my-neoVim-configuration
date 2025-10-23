@@ -2,7 +2,25 @@ return {
   "NickvanDyke/opencode.nvim",
   dependencies = {
     -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
-    { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+    {
+      "folke/snacks.nvim",
+      opts = {
+        input = {
+          enabled = true,
+          win = {
+            relative = "cursor",
+            row = 1,
+            col = 0,
+            style = "minimal",
+            border = "rounded",
+            backdrop = false,
+            wo = {
+              winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+            },
+          },
+        },
+      },
+    },
   },
   ---@type opencode.Opts
   opts = {

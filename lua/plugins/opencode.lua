@@ -7,25 +7,17 @@ return {
       opts = {
         input = {
           enabled = true,
-          win = {
-            relative = "cursor",
-            row = 1,
-            col = 0,
-            style = "minimal",
-            border = "rounded",
-            backdrop = false,
-            wo = {
-              winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
-            },
-          },
         },
       },
     },
   },
-  ---@type opencode.Opts
-  opts = {
-    -- Your configuration, if any — see lua/opencode/config.lua
-  },
+  config = function()
+    vim.g.opencode_opts = {
+      -- Your configuration, if any — see lua/opencode/config.lua
+    }
+    -- Required for auto_reload
+    vim.o.autoread = true
+  end,
   keys = {
     -- Recommended keymaps
     {

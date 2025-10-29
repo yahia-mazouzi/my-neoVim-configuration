@@ -1,25 +1,33 @@
 return {
   "NickvanDyke/opencode.nvim",
+  lazy = false,
   dependencies = {
-    -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
+    -- ✅ Needed for provider.toggle and better input UI
     {
       "folke/snacks.nvim",
+      lazy = false,
       opts = {
         input = {
           enabled = true,
         },
+        terminal = {
+          enabled = true, -- ✅ provides provider.toggle()
+        },
       },
     },
   },
+
   config = function()
     vim.g.opencode_opts = {
-      -- Your configuration, if any — see lua/opencode/config.lua
+      -- You can add settings here later if you want
     }
-    -- Required for auto_reload
+
+    -- ✅ Required for auto_reload & watching edited files
     vim.o.autoread = true
   end,
+
   keys = {
-    -- Recommended keymaps
+    -- ✅ Ask general question
     {
       "<leader>oA",
       function()
@@ -27,6 +35,8 @@ return {
       end,
       desc = "Ask opencode",
     },
+
+    -- ✅ Ask about cursor text
     {
       "<leader>oa",
       function()
@@ -35,6 +45,8 @@ return {
       desc = "Ask opencode about this",
       mode = "n",
     },
+
+    -- ✅ Ask about visually selected text
     {
       "<leader>oa",
       function()
@@ -43,6 +55,8 @@ return {
       desc = "Ask opencode about selection",
       mode = "v",
     },
+
+    -- ✅ Toggle embedded model panel
     {
       "<leader>ot",
       function()
@@ -50,13 +64,17 @@ return {
       end,
       desc = "Toggle embedded opencode",
     },
+
+    -- ✅ Start new session
     {
       "<leader>on",
       function()
         require("opencode").command "session_new"
       end,
-      desc = "New session",
+      desc = "New opencode session",
     },
+
+    -- ✅ Copy last response to clipboard
     {
       "<leader>oy",
       function()
@@ -64,6 +82,8 @@ return {
       end,
       desc = "Copy last message",
     },
+
+    -- ✅ Scroll response panel
     {
       "<S-C-u>",
       function()
@@ -78,6 +98,8 @@ return {
       end,
       desc = "Scroll messages down",
     },
+
+    -- ✅ Pick prompt template (coding, refactor, debug, explain, etc.)
     {
       "<leader>op",
       function()
@@ -86,7 +108,8 @@ return {
       desc = "Select prompt",
       mode = { "n", "v" },
     },
-    -- Example: keymap for custom prompt
+
+    -- ✅ Example custom prompt
     {
       "<leader>oe",
       function()

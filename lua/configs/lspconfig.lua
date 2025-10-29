@@ -17,6 +17,7 @@ local servers = {
   "jdtls",
   "jsonls",
   "prismals",
+  "djlint",
   -- "pylyzer",
   -- "jedi_language_server",
   "sqlls",
@@ -41,7 +42,9 @@ local on_attach_with_navbuddy = function(client, bufnr)
 end
 
 for _, lsp in ipairs(servers) do
-  local server_available, server_config = pcall(function() return lspconfig[lsp] end)
+  local server_available, server_config = pcall(function()
+    return lspconfig[lsp]
+  end)
   if server_available and server_config then
     server_config.setup {
       on_attach = on_attach_with_navbuddy,
@@ -62,7 +65,9 @@ end
 --   capabilities = nvlsp.capabilities,
 -- }
 
-local ts_ls_available = pcall(function() return lspconfig.ts_ls end)
+local ts_ls_available = pcall(function()
+  return lspconfig.ts_ls
+end)
 if ts_ls_available then
   lspconfig.ts_ls.setup {
     on_attach = nvlsp.on_attach,
@@ -76,7 +81,9 @@ if ts_ls_available then
   }
 end
 
-local clangd_available = pcall(function() return lspconfig.clangd end)
+local clangd_available = pcall(function()
+  return lspconfig.clangd
+end)
 if clangd_available then
   lspconfig.clangd.setup {
     on_attach = function(client, bufnr)
@@ -96,7 +103,9 @@ end
 --   capabilities = nvlsp.capabilities,
 -- }
 
-local basedpyright_available = pcall(function() return lspconfig.basedpyright end)
+local basedpyright_available = pcall(function()
+  return lspconfig.basedpyright
+end)
 if basedpyright_available then
   lspconfig.basedpyright.setup {
     on_attach = nvlsp.on_attach,
@@ -137,7 +146,9 @@ if basedpyright_available then
   }
 end
 
-local emmet_available = pcall(function() return lspconfig.emmet_language_server end)
+local emmet_available = pcall(function()
+  return lspconfig.emmet_language_server
+end)
 if emmet_available then
   lspconfig.emmet_language_server.setup {
     filetypes = {
@@ -176,3 +187,4 @@ if emmet_available then
     },
   }
 end
+

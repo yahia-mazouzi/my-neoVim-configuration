@@ -102,6 +102,12 @@ return {
             remoteRoot = "/usr/src/app",
           },
         },
+        lpg = {
+          {
+            localRoot = "/Users/med/Documents/Work/LPG/landing-page-studio",
+            remoteRoot = "/usr/src/app",
+          },
+        },
         -- Add more project configurations as needed:
         -- project_name = {
         --   { localRoot = "...", remoteRoot = "..." },
@@ -250,6 +256,39 @@ return {
           runtimeArgs = { "--esm", "--inspect-brk" },
         },
       }
+    end,
+  },
+  {
+    "julianolf/nvim-dap-lldb",
+    ft = { "c", "cpp" },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function()
+  local dap = require "dap"
+
+  dap.adapters.codelldb = {
+    type = "executable",
+    command = vim.fn.stdpath "data" .. "/mason/bin/codelldb",
+    name = "codelldb",
+  }
+
+  dap.configurations.c = {
+    {
+      name = "Launch",
+      type = "codelldb",
+      request = "launch",
+      program = function()
+        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+      end,
+      cwd = "${workspaceFolder}",
+      stopOnEntry = false,
+      args = {},
+    },
+  }
+
+  dap.configurations.cpp = dap.configurations.c
     end,
   },
 }

@@ -14,7 +14,8 @@ local servers = {
   "prismals",
   -- "pylyzer",
   -- "jedi_language_server",
-  "basedpyright",
+  "sqlls",
+  -- "basedpyright",
   "flake8",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
@@ -100,6 +101,7 @@ lspconfig.basedpyright.setup {
           reportImplicitRelativeImport = "none",
           reportUnusedCallResult = "none",
           reportExplicitAny = "none",
+          reportOperatorIssue = "none",
           reportAny = "none",
         },
         inlayHints = {
@@ -110,7 +112,7 @@ lspconfig.basedpyright.setup {
   },
 }
 
-lspconfig.emmet_language_server.setup {
+(vim.lsp.config and vim.lsp.config.emmet_language_server or lspconfig.emmet_language_server).setup {
   filetypes = {
     "css",
     "eruby",

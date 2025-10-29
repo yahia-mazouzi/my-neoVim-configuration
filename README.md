@@ -1,9 +1,43 @@
-**This repo is supposed to used as config by NvChad users!**
+# NVChad Custom Config
 
-- The main nvchad repo (NvChad/NvChad) is used as a plugin by this repo.
-- So you just import its modules , like `require "nvchad.options" , require "nvchad.mappings"`
-- So you can delete the .git from this repo ( when you clone it locally ) or fork it :)
+My personal NVChad setup with productivity plugins and custom keymaps.
 
-# Credits
+## Features
 
-1) Lazyvim starter https://github.com/LazyVim/starter as nvchad's starter was inspired by Lazyvim's . It made a lot of things easier!
+- **LSP**: Auto-completion, diagnostics, and code actions
+- **DAP**: Debugging support for multiple languages
+- **Git**: LazyGit integration
+- **Testing**: Neotest for running tests
+- **Navigation**: Telescope, Navbuddy, bookmark management
+- **AI**: Copilot and OpenCode integration
+- **Extras**: Markdown rendering, PlantUML, image preview, undo tree
+
+## Installation
+
+1. Install [NVChad](https://nvchad.com)
+2. Backup existing config: `mv ~/.config/nvim ~/.config/nvim.bak`
+3. Clone this repo: `git clone <repo-url> ~/.config/nvim`
+4. Open Neovim and let plugins install
+
+## Key Plugins
+
+- `conform` - Auto-formatting
+- `lint` - Linting
+- `telescope` - Fuzzy finder
+- `copilot` - AI code completion
+- `neotest` - Test runner
+- `render-markdown` - Enhanced markdown
+- `lazy-git` - Git UI
+- `dap` - Debugger
+
+## Structure
+
+```
+lua/
+├── configs/     # Plugin configurations
+├── custom/      # Custom modules
+├── plugins/     # Plugin definitions
+├── scripts/     # Helper scripts
+├── mappings.lua # Keybindings
+└── options.lua  # Neovim options
+```

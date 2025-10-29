@@ -16,7 +16,6 @@ local servers = {
   -- "jedi_language_server",
   "sqlls",
   -- "basedpyright",
-  "flake8",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 local navbuddy = require "nvim-navbuddy"
@@ -112,7 +111,7 @@ lspconfig.basedpyright.setup {
   },
 }
 
-(vim.lsp.config and vim.lsp.config.emmet_language_server or lspconfig.emmet_language_server).setup {
+lspconfig.emmet_language_server.setup {
   filetypes = {
     "css",
     "eruby",

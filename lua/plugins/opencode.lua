@@ -13,13 +13,20 @@ return {
         terminal = {
           enabled = true, -- ✅ provides provider.toggle()
         },
+        picker = {
+          enabled = true, -- ✅ enhances select() for prompt picking
+        },
       },
     },
   },
 
   config = function()
     vim.g.opencode_opts = {
-      -- You can add settings here later if you want
+      -- Available context providers:
+      -- @cursor - text around cursor position
+      -- @selection - visually selected text
+      -- @file - current file content
+      -- Note: @buffer is NOT supported, use @file instead
     }
 
     -- ✅ Required for auto_reload & watching edited files

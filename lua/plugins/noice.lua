@@ -69,6 +69,7 @@ return {
       max_width = 40,
       max_height = 5,
       minimum_width = 20,
+      background_colour = "#000000",
     }
   end,
   dependencies = {

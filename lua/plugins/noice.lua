@@ -7,9 +7,9 @@ return {
       cmdline = {
         view = "cmdline", -- or cmdline
         format = {
-          cmdline = { icon = "" },
-          search_down = { icon = " " },
-          search_up = { icon = " " },
+          cmdline = { icon = "" },
+          search_down = { icon = " " },
+          search_up = { icon = " " },
         },
       },
       messages = {
@@ -17,6 +17,10 @@ return {
         view_error = "notify",
         view_warn = "notify",
         view_history = "messages",
+      },
+      notify = {
+        enabled = true,
+        view = "notify",
       },
       popupmenu = {
         enabled = true,
@@ -63,6 +67,9 @@ return {
         },
       },
     }
+    -- Let Noice handle notify setup internally
+    -- Customize notify through Noice's config instead
+    vim.notify = require("noice").notify
     require("notify").setup {
       stages = "fade_in_slide_out",
       timeout = 2000,

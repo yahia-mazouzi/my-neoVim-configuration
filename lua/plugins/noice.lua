@@ -19,7 +19,7 @@ return {
         view_history = "messages",
       },
       notify = {
-        enabled = true,
+        enabled = false,
         view = "notify",
       },
       popupmenu = {
@@ -67,17 +67,6 @@ return {
         },
       },
     }
-    -- Let Noice handle notify setup internally
-    -- Customize notify through Noice's config instead
-    vim.notify = require("noice").notify
-    require("notify").setup {
-      stages = "fade_in_slide_out",
-      timeout = 2000,
-      max_width = 40,
-      max_height = 5,
-      minimum_width = 20,
-      background_colour = "#000000",
-    }
   end,
   dependencies = {
     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
@@ -85,6 +74,16 @@ return {
     -- OPTIONAL:
     --   `nvim-notify` is only needed, if you want to use the notification view.
     --   If not available, we use `mini` as the fallback
-    "rcarriga/nvim-notify",
+    {
+      "rcarriga/nvim-notify",
+      opts = {
+        stages = "fade_in_slide_out",
+        timeout = 2000,
+        max_width = 40,
+        max_height = 5,
+        minimum_width = 20,
+        background_colour = "#000000",
+      },
+    },
   },
 }

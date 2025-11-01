@@ -35,14 +35,11 @@ local on_attach_with_navbuddy = function(client, bufnr)
 end
 
 for _, lsp in ipairs(servers) do
-  local ok = pcall(vim.lsp.config, lsp, {
+  vim.lsp.config[lsp] = {
     on_attach = on_attach_with_navbuddy,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
-  })
-  if not ok then
-    vim.notify("Failed to setup LSP: " .. lsp, vim.log.levels.WARN)
-  end
+  }
 end
 
 local disable_formatting = function(client)
@@ -56,7 +53,7 @@ end
 --   capabilities = nvlsp.capabilities,
 -- })
 
-local ts_ls_ok = pcall(vim.lsp.config, "ts_ls", {
+vim.lsp.config["ts_ls"] = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
@@ -65,21 +62,15 @@ local ts_ls_ok = pcall(vim.lsp.config, "ts_ls", {
       disableSuggestions = true,
     },
   },
-})
-if not ts_ls_ok then
-  vim.notify("Failed to setup ts_ls", vim.log.levels.WARN)
-end
+}
 
-local clangd_ok = pcall(vim.lsp.config, "clangd", {
+vim.lsp.config["clangd"] = {
   on_attach = function(client, bufnr)
     disable_formatting(client)
     nvlsp.on_attach(client, bufnr)
   end,
   capabilities = nvlsp.capabilities,
-})
-if not clangd_ok then
-  vim.notify("Failed to setup clangd", vim.log.levels.WARN)
-end
+}
 
 -- vim.lsp.config("ruff", {
 --   -- for more code actions , ruff is used by conform for hunk formatting
@@ -90,7 +81,7 @@ end
 --   capabilities = nvlsp.capabilities,
 -- })
 
-vim.lsp.config("basedpyright", {
+vim.lsp.config["basedpyright"] = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
@@ -126,9 +117,12 @@ vim.lsp.config("basedpyright", {
       },
     },
   },
-})
+}
 
-local emmet_ok = pcall(vim.lsp.config, "emmet_language_server", {
+vim.lsp.config["emmet_language_server"] = {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
   filetypes = {
     "css",
     "eruby",
@@ -163,7 +157,16 @@ local emmet_ok = pcall(vim.lsp.config, "emmet_language_server", {
     --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
     variables = {},
   },
-})
-if not emmet_ok then
-  vim.notify("Failed to setup emmet_language_server", vim.log.levels.WARN)
+}
+
+-- Enable all configured language servers
+local lsp_names = {}
+for _, lsp in ipairs(servers) do
+  table.insert(lsp_names, lsp)
 end
+table.insert(lsp_names, "ts_ls")
+table.insert(lsp_names, "clangd")
+table.insert(lsp_names, "basedpyright")
+table.insert(lsp_names, "emmet_language_server")
+
+vim.lsp.enable(lsp_names)

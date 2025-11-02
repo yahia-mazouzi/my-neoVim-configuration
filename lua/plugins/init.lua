@@ -8,12 +8,10 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
-    opts = {
-      diagnostics = {
-        virtual_text = false,
-        signs = false,
-      },
-    },
+    -- nvim-lspconfig now only provides configs, not the framework
+    -- The configs are automatically found by vim.lsp.config()
+    lazy = false,
+    priority = 1000,
     config = function()
       require "configs.lspconfig"
     end,

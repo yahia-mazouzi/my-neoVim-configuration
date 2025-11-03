@@ -119,6 +119,21 @@ vim.lsp.config["basedpyright"] = {
   },
 }
 
+vim.lsp.config["ruff"] = {
+
+  on_attach = function(client, bufnr)
+    disable_formatting(client)
+    -- avoid hover conflict with basedpyright
+    client.server_capabilities.hoverProvider = false
+    nvlsp.on_attach(client, bufnr)
+  end,
+  init_options = {
+    settings = {
+      -- Ruff language server settings go here
+    },
+  },
+}
+
 vim.lsp.config["emmet_language_server"] = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
@@ -167,6 +182,7 @@ end
 table.insert(lsp_names, "ts_ls")
 table.insert(lsp_names, "clangd")
 table.insert(lsp_names, "basedpyright")
+table.insert(lsp_names, "ruff")
 table.insert(lsp_names, "emmet_language_server")
 
 vim.lsp.enable(lsp_names)

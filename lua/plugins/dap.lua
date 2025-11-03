@@ -90,9 +90,9 @@ return {
 
       -- Define project mapping configurations
       local project_mappings = {
-        default = {
+        rb = {
           {
-            localRoot = "/Users/med/Documents/Work/RB/domainprospector/app",
+            localRoot = vim.fn.getcwd() .. "/app",
             remoteRoot = "/linklabs",
           },
         },

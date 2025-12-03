@@ -9,6 +9,10 @@ return {
       },
       symbol_in_winbar = {
         enable = true,
+        separator = " > ",
+        show_file = true,
+        folder_level = 2,
+        color_mode = true,
       },
       code_action = {
         show_server_name = true,

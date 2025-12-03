@@ -13,7 +13,6 @@ local servers = {
   "djlint",
   -- "pylyzer",
   -- "jedi_language_server",
-  "sqlls",
   -- "basedpyright",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
@@ -134,6 +133,16 @@ vim.lsp.config["ruff"] = {
   },
 }
 
+vim.lsp.config["mypy"] = {
+  on_attach = function(client, bufnr)
+    -- Disable hover to avoid conflicts with basedpyright
+    client.server_capabilities.hoverProvider = false
+    nvlsp.on_attach(client, bufnr)
+  end,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+}
+
 vim.lsp.config["emmet_language_server"] = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
@@ -174,6 +183,121 @@ vim.lsp.config["emmet_language_server"] = {
   },
 }
 
+-- SQL LSP with code actions for query execution
+-- Helper function to extract current SQL statement
+local function get_current_sql_statement()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local current_line = cursor_pos[1]
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+  -- Find start of statement (search backwards for semicolon or empty line)
+  local start_line = current_line
+  for i = current_line - 1, 1, -1 do
+    local line = lines[i]
+    if line:match "^%s*$" or line:match ";%s*$" then
+      start_line = i + 1
+      break
+    end
+    if i == 1 then
+      start_line = 1
+    end
+  end
+
+  -- Find end of statement (search forwards for semicolon or empty line)
+  local end_line = current_line
+  for i = current_line, #lines do
+    local line = lines[i]
+    if line:match ";%s*$" then
+      end_line = i
+      break
+    end
+    if i > current_line and line:match "^%s*$" then
+      end_line = i - 1
+      break
+    end
+    if i == #lines then
+      end_line = #lines
+    end
+  end
+
+  -- Extract the SQL statement
+  local sql_lines = {}
+  for i = start_line, end_line do
+    table.insert(sql_lines, lines[i])
+  end
+
+  local sql = table.concat(sql_lines, "\n")
+  -- Remove trailing semicolon and whitespace
+  sql = sql:gsub(";%s*$", "")
+
+  return sql, start_line, end_line
+end
+
+-- Execute SQL using vim-dadbod
+local function execute_current_sql()
+  local sql, start_line, end_line = get_current_sql_statement()
+
+  if sql == "" or sql:match "^%s*$" then
+    vim.notify("No SQL statement found", vim.log.levels.WARN)
+    return
+  end
+
+  -- Check if dadbod is available
+  if vim.fn.exists "*db#execute" == 0 then
+    vim.notify("vim-dadbod not found. Please install vim-dadbod and vim-dadbod-ui", vim.log.levels.ERROR)
+    return
+  end
+
+  -- Get the current database from dbui
+  local db = vim.g.db or vim.b.db
+  if not db or db == "" then
+    vim.notify(
+      "No database selected. Please select a database in DBUI first (press 'S' on a database)",
+      vim.log.levels.WARN
+    )
+    return
+  end
+
+  vim.notify("Executing SQL (lines " .. start_line .. "-" .. end_line .. ")...", vim.log.levels.INFO)
+
+  -- Execute the query
+  local ok, result = pcall(vim.fn["db#execute"], db, sql)
+
+  if not ok then
+    vim.notify("Error executing SQL: " .. tostring(result), vim.log.levels.ERROR)
+    return
+  end
+
+  -- Display results in a new split
+  vim.cmd "new"
+  local result_buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_buf_set_option(result_buf, "buftype", "nofile")
+  vim.api.nvim_buf_set_option(result_buf, "bufhidden", "wipe")
+  vim.api.nvim_buf_set_name(result_buf, "SQL Results")
+
+  -- Split result into lines and set
+  local result_lines = vim.split(result, "\n", { plain = true })
+  vim.api.nvim_buf_set_lines(result_buf, 0, -1, false, result_lines)
+  vim.api.nvim_buf_set_option(result_buf, "modifiable", false)
+
+  vim.notify("Query executed successfully (" .. #result_lines .. " lines)", vim.log.levels.INFO)
+end
+
+vim.lsp.config["sqlls"] = {
+  on_attach = function(client, bufnr)
+    nvlsp.on_attach(client, bufnr)
+
+    -- Add keymap to execute current SQL statement
+    vim.keymap.set("n", "<leader>se", execute_current_sql, {
+      buffer = bufnr,
+      desc = "Execute current SQL statement",
+    })
+  end,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+}
+
 -- Enable all configured language servers
 local lsp_names = {}
 for _, lsp in ipairs(servers) do
@@ -183,6 +307,8 @@ table.insert(lsp_names, "ts_ls")
 table.insert(lsp_names, "clangd")
 table.insert(lsp_names, "basedpyright")
 table.insert(lsp_names, "ruff")
+table.insert(lsp_names, "mypy")
 table.insert(lsp_names, "emmet_language_server")
+table.insert(lsp_names, "sqlls")
 
 vim.lsp.enable(lsp_names)

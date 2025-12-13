@@ -16,7 +16,7 @@ local options = {
     cpp = { "clang-format" },
     c = { "clang-format" },
     java = { "google-java-format" },
-    sql = { "sqruff" },
+    sql = { "sql-formatter" },
   },
 
   format_on_save = function(_)

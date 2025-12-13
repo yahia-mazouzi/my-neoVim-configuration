@@ -307,7 +307,7 @@ table.insert(lsp_names, "ts_ls")
 table.insert(lsp_names, "clangd")
 table.insert(lsp_names, "basedpyright")
 table.insert(lsp_names, "ruff")
-table.insert(lsp_names, "mypy")
+table.insert(lsp_names, "mypy") -- Note: mypy provides diagnostics, not code actions
 table.insert(lsp_names, "emmet_language_server")
 table.insert(lsp_names, "sqlls")
 

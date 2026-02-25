@@ -11,6 +11,7 @@ local servers = {
   "jsonls",
   "prismals",
   "djlint",
+  "plantuml_lsp",
   -- "pylyzer",
   -- "jedi_language_server",
   -- "basedpyright",

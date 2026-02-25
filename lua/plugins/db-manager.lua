@@ -14,6 +14,47 @@ return {
       "kristijanhusak/vim-dadbod-completion",
     },
     cmd = { "DBUI", "DBUIToggle", "DBUIFindBuffer" },
+    keys = {
+      {
+        "<leader>ca",
+        function()
+          vim.ui.select({
+            "Execute query",
+            "Execute all",
+            "Save query",
+            "Find buffer",
+          }, { prompt = "DB Actions" }, function(choice)
+            if not choice then
+              return
+            end
+            if choice == "Execute query" then
+              vim.cmd "normal! vas"
+              -- briefly highlight the selection so the user sees what will run
+              vim.cmd "redraw"
+              vim.defer_fn(function()
+                vim.api.nvim_feedkeys(
+                  vim.api.nvim_replace_termcodes("<Plug>(DBUI_ExecuteQuery)", true, true, true),
+                  "x",
+                  false
+                )
+              end, 300)
+            elseif choice == "Execute all" then
+              vim.api.nvim_feedkeys(
+                vim.api.nvim_replace_termcodes("<Plug>(DBUI_ExecuteQuery)", true, true, true),
+                "n",
+                false
+              )
+            elseif choice == "Save query" then
+              vim.cmd "DBUISaveQuery"
+            elseif choice == "Find buffer" then
+              vim.cmd "DBUIFindBuffer"
+            end
+          end)
+        end,
+        ft = { "sql", "mysql", "plsql" },
+        desc = "DB Actions",
+      },
+    },
     init = function()
       -- Where to keep DB UI config
       vim.g.db_ui_save_location = vim.fn.stdpath "data" .. "/db_ui"

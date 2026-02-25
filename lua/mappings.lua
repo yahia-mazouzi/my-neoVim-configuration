@@ -16,7 +16,6 @@ map("n", "gds", function()
   vim.lsp.buf.definition()
 end, { desc = "Go to definition in vsp" })
 
-
 vim.keymap.set("n", "gdt", function()
   local params = vim.lsp.util.make_position_params()
   vim.lsp.buf_request(0, "textDocument/definition", params, function(_, result, ctx, _)
@@ -25,7 +24,7 @@ vim.keymap.set("n", "gdt", function()
       return
     end
 
-    vim.cmd("tabnew")
+    vim.cmd "tabnew"
 
     if vim.tbl_islist(result) then
       vim.lsp.util.jump_to_location(result[1], "utf-8", true)
@@ -34,7 +33,6 @@ vim.keymap.set("n", "gdt", function()
     end
   end)
 end, { desc = "Go to definition in new tab" })
-
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
@@ -61,7 +59,7 @@ map("i", "<C-j>", function()
 end, { desc = "Accept Copilot suggestion" })
 
 map("n", "<leader>cp", function()
-  require("copilot.panel").open({ position = "bottom", ratio = 0.4 })
+  require("copilot.panel").open { position = "bottom", ratio = 0.4 }
 end, { desc = "Open Copilot panel" })
 
 map("i", "<C-\\>", function()
@@ -74,8 +72,8 @@ map("i", "<C-Space>", function()
 end, { desc = "Manually trigger Copilot suggestion" })
 
 -- Alternative manual trigger
-map("i", "<M-\\>", function()
-  local copilot_suggestion = require("copilot.suggestion")
+map("i", "<Cmd-\\>", function()
+  local copilot_suggestion = require "copilot.suggestion"
   if copilot_suggestion.is_visible() then
     copilot_suggestion.next()
   else
@@ -96,3 +94,8 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
+-- PlantUML mappings
+map("n", "<leader>po", "<cmd>PlantumlOpen<cr>", { desc = "Open PlantUML diagram in browser" })
+map("n", "<leader>ps", "<cmd>PlantumlSave<cr>", { desc = "Save PlantUML diagram" })
+map("n", "<leader>pt", "<cmd>PlantumlStart<cr>", { desc = "Start PlantUML server" })
+map("n", "<leader>pq", "<cmd>PlantumlStop<cr>", { desc = "Stop PlantUML server" })

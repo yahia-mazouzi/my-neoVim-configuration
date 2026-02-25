@@ -1,9 +1,9 @@
 return {
   {
     "weirongxu/plantuml-previewer.vim",
-    ft = { "plantuml", "pu", "puml" }, -- adjust based on your filetypes
+    ft = { "plantuml", "pu", "puml" },
     lazy = true,
-    event = "VeryLazy", -- fallback lazy loading
+    cmd = { "PlantumlOpen", "PlantumlSave", "PlantumlStart", "PlantumlStop" },
     dependencies = {
       "tyru/open-browser.vim",
       "aklt/plantuml-syntax",

@@ -6,15 +6,55 @@
 local M = {}
 
 M.base46 = {
-  transparency = true,
-  theme = "doomchad",
+  transparency = false,
+  theme = "kanagawa",
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
     Pmenu = { bg = "white" },
-    -- Normal = {
-    --   bg = { "black", 0.4 },
-    -- },
+    Normal = {
+      bg = "#1B1B24",
+    },
+    -- Cooler tab styling
+    TbLineBufOn = {
+      fg = "#DCD7BA",
+      bg = "#2A2A37",
+      bold = true,
+      sp = "#7FB4CA",
+      underline = true,
+    },
+    TbLineBufOnModified = {
+      fg = "#E82424",
+      bg = "#2A2A37",
+      bold = true,
+    },
+    TbLineBufOff = {
+      fg = "#727169",
+      bg = "#1F1F28",
+    },
+    TbLineBufOffModified = {
+      fg = "#C34043",
+      bg = "#1F1F28",
+    },
+    TbLineBufOnClose = {
+      fg = "#C8C093",
+      bg = "#2A2A37",
+      bold = true,
+    },
+    TbLineBufOffClose = {
+      fg = "#727169",
+      bg = "#1F1F28",
+    },
+    TblineTabOn = {
+      fg = "#7FB4CA",
+      bg = "#363646",
+      bold = true,
+      italic = true,
+    },
+    TblineTabOff = {
+      fg = "#54546D",
+      bg = "#16161D",
+    },
   },
 }
 
@@ -56,6 +96,7 @@ M.term = {}
 
 M.ui = {
   tabufline = {
+    enabled = true,
     lazyload = true,
   },
   statusline = {

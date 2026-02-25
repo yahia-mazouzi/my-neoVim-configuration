@@ -4,16 +4,19 @@ return {
   init = function()
     -- Use Skim PDF viewer on macOS
     vim.g.vimtex_view_method = "skim"
-    vim.g.vimtex_compiler_method = "latexmk"
+    vim.g.vimtex_compiler_method = "generic"
 
     -- Optional but recommended settings:
     vim.g.vimtex_view_skim_sync = 1 -- Enable forward/inverse search
     vim.g.vimtex_view_skim_activate = 1 -- Auto-focus Skim when building
-    vim.g.vimtex_compiler_latexmk = {
+
+    -- Generic compiler using pdflatex directly (no latexmk needed)
+    vim.g.vimtex_compiler_generic = {
+      command = "pdflatex",
       options = {
-        "-pdf",
         "-interaction=nonstopmode",
         "-synctex=1",
+        "-file-line-error",
       },
     }
   end,

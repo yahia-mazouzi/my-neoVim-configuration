@@ -1,3 +1,5 @@
 return {
-	["teh"] = "the",
+  ["rb"] = "rb",
+  ["teh"] = "the",
+  ["rb/"] = "rb/",
 }

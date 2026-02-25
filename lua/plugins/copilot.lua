@@ -30,7 +30,7 @@ return {
                 "'",
                 "/",
               },
-              debounceMs = 50, -- even faster refresh for more suggestions
+              debounceMs = 150, -- balanced refresh rate to prevent blinking
             },
           },
         },
@@ -53,12 +53,20 @@ return {
         optional = true,
         ---@param opts cmp.ConfigSchema
         opts = function(_, opts)
-          -- Put Copilot suggestions *above* LSP and others
+          -- Put Copilot suggestions with LSP and others (same group to prevent blinking)
           table.insert(opts.sources, 1, {
             name = "copilot",
-            group_index = 1,
-            priority = 1000,
+            group_index = 2,
+            priority = 100,
+            keyword_length = 1,
+            max_item_count = 3,
           })
+
+          -- Add performance settings to reduce blinking
+          opts.performance = opts.performance or {}
+          opts.performance.throttle = 80
+          opts.performance.debounce = 60
+          opts.performance.fetching_timeout = 200
         end,
       },
     },

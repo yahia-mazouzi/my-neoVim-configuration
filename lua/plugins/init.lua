@@ -32,6 +32,7 @@ return {
           "python",
           "markdown",
           "markdown_inline",
+          "mermaid",
           "yaml",
         },
         highlight = {

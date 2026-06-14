@@ -94,6 +94,34 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
+-- Open URL under cursor (gx) or with Ctrl+Click
+local function open_url_under_cursor()
+  local url = vim.fn.expand "<cfile>"
+  if url:match "^https?://" then
+    vim.ui.open(url)
+  else
+    -- Try to find a URL on the current line
+    local line = vim.api.nvim_get_current_line()
+    local found = line:match "https?://[%w_.~!*'();:@&=+$,/?#%[%]%%-]+"
+    if found then
+      vim.ui.open(found)
+    else
+      vim.notify("No URL found under cursor", vim.log.levels.WARN)
+    end
+  end
+end
+
+map("n", "gx", open_url_under_cursor, { desc = "Open URL under cursor" })
+map("n", "<C-LeftMouse>", function()
+  -- Move cursor to click position first, then open
+  vim.cmd "normal! <LeftMouse>"
+  open_url_under_cursor()
+end, { desc = "Ctrl+Click to open URL" })
+
+-- Mermaid mappings
+map("n", "<leader>mo", "<cmd>MermaidPreview<cr>", { desc = "Mermaid preview in browser" })
+map("n", "<leader>ms", "<cmd>MermaidSave<cr>", { desc = "Mermaid save as SVG" })
+
 -- PlantUML mappings
 map("n", "<leader>po", "<cmd>PlantumlOpen<cr>", { desc = "Open PlantUML diagram in browser" })
 map("n", "<leader>ps", "<cmd>PlantumlSave<cr>", { desc = "Save PlantUML diagram" })

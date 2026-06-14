@@ -285,7 +285,7 @@ local function execute_current_sql()
   vim.notify("Query executed successfully (" .. #result_lines .. " lines)", vim.log.levels.INFO)
 end
 
-vim.lsp.config["sqlls"] = {
+vim.lsp.config["postgres_lsp"] = {
   on_attach = function(client, bufnr)
     nvlsp.on_attach(client, bufnr)
 
@@ -310,6 +310,6 @@ table.insert(lsp_names, "basedpyright")
 table.insert(lsp_names, "ruff")
 table.insert(lsp_names, "mypy") -- Note: mypy provides diagnostics, not code actions
 table.insert(lsp_names, "emmet_language_server")
-table.insert(lsp_names, "sqlls")
+table.insert(lsp_names, "postgres_lsp")
 
 vim.lsp.enable(lsp_names)

@@ -8,5 +8,8 @@ return {
       "tyru/open-browser.vim",
       "aklt/plantuml-syntax",
     },
+    init = function()
+      vim.g["plantuml_previewer#plantuml_jar_path"] = vim.fn.glob "/opt/homebrew/Cellar/plantuml/*/libexec/plantuml.jar"
+    end,
   },
 }

@@ -34,6 +34,8 @@ return {
           "markdown_inline",
           "mermaid",
           "yaml",
+          "c_sharp",
+          "xml",
         },
         highlight = {
           enable = true,

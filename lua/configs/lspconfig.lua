@@ -299,6 +299,91 @@ vim.lsp.config["postgres_lsp"] = {
   capabilities = nvlsp.capabilities,
 }
 
+-- roslyn-language-server and csharpier are standalone .NET apphosts: unlike the
+-- `dotnet` CLI they cannot locate the runtime themselves and exit 131 without
+-- DOTNET_ROOT. Derived from `dotnet` on PATH rather than hardcoded, so it works
+-- for Homebrew (runtime under libexec/) and the official installer alike.
+local function dotnet_root()
+  if vim.env.DOTNET_ROOT then
+    return vim.env.DOTNET_ROOT
+  end
+  local dotnet_exe = vim.fn.exepath "dotnet"
+  if dotnet_exe == "" then
+    return nil
+  end
+  local bin_dir = vim.fs.dirname(vim.fn.resolve(dotnet_exe))
+  -- DOTNET_ROOT is whichever of these actually holds the shared runtime
+  for _, root in ipairs { vim.fs.joinpath(vim.fs.dirname(bin_dir), "libexec"), bin_dir } do
+    if vim.uv.fs_stat(vim.fs.joinpath(root, "shared")) then
+      return root
+    end
+  end
+  return nil
+end
+
+-- Exported for conform's csharpier, which inherits nvim's environment.
+vim.env.DOTNET_ROOT = dotnet_root()
+
+-- C# via roslyn.nvim (plugins/dotnet.lua).
+-- roslyn.nvim calls vim.lsp.enable("roslyn") itself, so it is deliberately
+-- absent from lsp_names below. Formatting is disabled here because conform
+-- runs csharpier, matching how clangd/ruff are handled above.
+vim.lsp.config["roslyn"] = {
+  on_attach = function(client, bufnr)
+    disable_formatting(client)
+    on_attach_with_navbuddy(client, bufnr)
+
+    -- Roslyn does not push code lens; it must be pulled, or the
+    -- csharp|code_lens settings below have no visible effect.
+    if client.server_capabilities.codeLensProvider then
+      vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "BufWritePost" }, {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.codelens.refresh { bufnr = bufnr }
+        end,
+      })
+    end
+  end,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  -- vim.lsp forwards only an allowlist of env vars plus cmd_env to the server, so
+  -- an inherited DOTNET_ROOT never reaches it. roslyn.nvim's own lsp/roslyn.lua
+  -- sets cmd_env, and this merges into it.
+  cmd_env = { DOTNET_ROOT = vim.env.DOTNET_ROOT },
+  settings = {
+    ["csharp|background_analysis"] = {
+      dotnet_analyzer_diagnostics_scope = "fullSolution",
+      dotnet_compiler_diagnostics_scope = "fullSolution",
+    },
+    ["csharp|code_lens"] = {
+      dotnet_enable_references_code_lens = true,
+      dotnet_enable_tests_code_lens = true,
+    },
+    ["csharp|completion"] = {
+      dotnet_provide_regex_completions = true,
+      dotnet_show_completion_items_from_unimported_namespaces = true,
+      dotnet_show_name_completion_suggestions = true,
+    },
+    ["csharp|symbol_search"] = {
+      dotnet_search_reference_assemblies = true,
+    },
+    -- Hints are computed but hidden until toggled with <leader>Nh
+    ["csharp|inlay_hints"] = {
+      csharp_enable_inlay_hints_for_implicit_object_creation = true,
+      csharp_enable_inlay_hints_for_implicit_variable_types = true,
+      csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+      csharp_enable_inlay_hints_for_types = true,
+      dotnet_enable_inlay_hints_for_indexer_parameters = true,
+      dotnet_enable_inlay_hints_for_literal_parameters = true,
+      dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+      dotnet_enable_inlay_hints_for_other_parameters = true,
+      dotnet_enable_inlay_hints_for_parameters = true,
+      dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+      dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+    },
+  },
+}
+
 -- Enable all configured language servers
 local lsp_names = {}
 for _, lsp in ipairs(servers) do

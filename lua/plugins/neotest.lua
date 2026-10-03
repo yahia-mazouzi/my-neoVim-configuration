@@ -6,8 +6,9 @@ return {
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-python",
+      "Issafalcon/neotest-dotnet",
     },
-    ft = { "python", "django" },
+    ft = { "python", "django", "cs", "fsharp" },
     config = function()
       local neotest = require "neotest"
 
@@ -17,6 +18,9 @@ return {
             dap = { justMyCode = false },
             runner = "pytest",
             python = "/Users/med/.config/nvim/lua/scripts/run_python_docker.sh",
+          },
+          require "neotest-dotnet" {
+            discovery_root = "solution", -- discover tests across the whole .sln
           },
         },
         icons = {

@@ -45,6 +45,16 @@ return {
       vim.api.nvim_set_hl(0, "DapStoppedLine", {
         bg = "#3E4452",
       })
+
+      -- .NET: easy-dotnet.nvim owns launching/debugging the app itself
+      -- (auto_register_dap + `:Dotnet debug`), so no launch config is defined here.
+      -- This bare adapter exists only so neotest-dotnet can debug a single test
+      -- via <leader>td. Requires :MasonInstall netcoredbg.
+      require("dap").adapters.netcoredbg = {
+        type = "executable",
+        command = vim.fn.stdpath "data" .. "/mason/bin/netcoredbg",
+        args = { "--interpreter=vscode" },
+      }
     end,
   },
   {
@@ -88,12 +98,29 @@ return {
         }
       end, { desc = "Launch Django runserver in DAP" })
 
+      -- Repo root, not cwd: this machine works out of git worktrees
+      -- (~/.herdr/worktrees/<repo>/<branch>), and nvim is as often opened in
+      -- backend/ as at the top.
+      local function repo_root()
+        local root = vim.fn.systemlist("git -C " .. vim.fn.shellescape(vim.fn.getcwd()) .. " rev-parse --show-toplevel")[1]
+        if vim.v.shell_error ~= 0 or not root or root == "" then
+          return vim.fn.getcwd()
+        end
+        return root
+      end
+
       -- Define project mapping configurations
       local project_mappings = {
         rb = {
           {
             localRoot = vim.fn.getcwd() .. "/app",
             remoteRoot = "/linklabs",
+          },
+        },
+        adgentic = {
+          {
+            localRoot = repo_root() .. "/backend",
+            remoteRoot = "/app",
           },
         },
         gsc = {
@@ -175,6 +202,24 @@ return {
           },
         }
       end, { desc = "Attach Celery Worker Debugger" })
+
+      -- adgentic backend, native mode. No --reload: the reloader runs the app
+      -- in a child process debugpy never attaches to, so breakpoints go dead.
+      -- Stop the running backend first or 8000 is taken.
+      vim.keymap.set("n", "<leader>du", function()
+        local backend = repo_root() .. "/backend"
+        require("dap").run {
+          type = "python",
+          request = "launch",
+          name = "adgentic backend (uvicorn)",
+          module = "uvicorn",
+          args = { "main:app", "--port", "8000", "--log-level", "debug" },
+          cwd = backend,
+          pythonPath = backend .. "/.venv/bin/python",
+          justMyCode = false,
+          console = "integratedTerminal",
+        }
+      end, { desc = "Launch adgentic backend (uvicorn) in DAP" })
     end,
   },
   {

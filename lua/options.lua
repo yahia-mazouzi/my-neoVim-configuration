@@ -142,3 +142,15 @@ vim.api.nvim_create_user_command("FocusOff", function()
   vim.opt_local.signcolumn = "auto"
   vim.notify("Focus mode OFF", vim.log.levels.INFO)
 end, { desc = "Exit focus mode" })
+
+-- .NET desktop markup + MSBuild files nvim doesn't detect by default
+-- (.csproj and .slnx already map to xml upstream).
+-- xaml = WPF/WinUI, axaml = Avalonia; both are XML dialects.
+vim.filetype.add {
+  extension = {
+    xaml = "xml",
+    axaml = "xml",
+    props = "xml",
+    targets = "xml",
+  },
+}
